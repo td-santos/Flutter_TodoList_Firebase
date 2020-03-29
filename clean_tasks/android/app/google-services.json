@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "635272463638",
+    "firebase_url": "https://cleantasks-5ab08.firebaseio.com",
+    "project_id": "cleantasks-5ab08",
+    "storage_bucket": "cleantasks-5ab08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635272463638:android:a6696ce72db2f8857abc37",
+        "android_client_info": {
+          "package_name": "com.dantas.thiago.clean_tasks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "635272463638-7vdcfdqr3aatnq97i83tdi5lqdodtvkq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dantas.thiago.clean_tasks",
+            "certificate_hash": "e3991a0e65ace3f16ba70ce5da8086baea8f9e4d"
+          }
+        },
+        {
+          "client_id": "635272463638-uobe7ogdkpc0ln07h18kor5utoi0hq86.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDd7Ir66OgJpLFw4lBw5MVHFu8_9xa1Rs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "635272463638-uobe7ogdkpc0ln07h18kor5utoi0hq86.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
