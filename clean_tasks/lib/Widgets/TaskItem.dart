@@ -1,15 +1,24 @@
 import 'dart:math';
 
+import 'package:clean_tasks/Controllers/FirebaseController.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'DialogAddTask.dart';
 
 class TaskItem extends StatefulWidget {
 
   final bool concluido;
   final String title;
   final Color color;
+  final String selectedDOC;
+  final String data;
+  final FirebaseUser user;
+  final DocumentSnapshot dados;
   
 
-  const TaskItem({Key key, this.concluido , this.title, this.color}) : super(key: key);
+  const TaskItem({Key key, this.concluido , this.title, this.color, this.selectedDOC, this.data, this.user, this.dados}) : super(key: key);
   
   @override
   _TaskItemState createState() => _TaskItemState();
@@ -22,6 +31,18 @@ class _TaskItemState extends State<TaskItem> {
   //var random = Random();
   Color cor;
 
+ _dialodAddTask() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return DialogAddTask(
+            user: widget.user,
+            titleTarefa: widget.title,
+            datatarefa: widget.dados.data["data"],
+            selectedDOC: widget.selectedDOC,
+          );
+        });
+  }
 
   @override
   void initState() {
@@ -68,7 +89,11 @@ class _TaskItemState extends State<TaskItem> {
                     onChanged: (bool value){
                       
                       setState(() {
+
                         checked = value;
+
+                        FirebaseController fc = FirebaseController();
+                        fc.updadeStatusFirebase(widget.user, widget.data, widget.selectedDOC,checked);
                         print(checked);
                       });
                     },
@@ -78,7 +103,12 @@ class _TaskItemState extends State<TaskItem> {
                       Container(
                         padding: EdgeInsets.only(top: 11,bottom: 11),
                         width: 260,
-                        child: Text(widget.title,style: TextStyle(fontSize: 20),),
+                        child: GestureDetector(
+                          onTap: (){
+                            print("DATA ENVIADA ${widget.dados.data["data"]}");
+                            _dialodAddTask();
+                            },
+                          child: Text(widget.title,style: TextStyle(fontSize: 20),)),
                       ),
                     ],
                   )

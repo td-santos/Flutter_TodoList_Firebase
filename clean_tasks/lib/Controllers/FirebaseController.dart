@@ -19,6 +19,24 @@ class FirebaseController{
             .add(tarefa.toMap());
   }
 
+  updateTarefaTitleFirebase(FirebaseUser fbUser, String data, String selectedDoc,String tarefaTitle)async{
+    await bd.collection("tarefa_bd")
+            .document(fbUser.uid)
+            .collection(data.replaceAll("/", "-"))
+            .document(selectedDoc).updateData({"tarefa":tarefaTitle} );
+  }
+
+  updadeStatusFirebase(FirebaseUser fbUser, String data,String selectedDoc, bool concluido)async{
+
+    await bd.collection("tarefa_bd")
+            .document(fbUser.uid)
+            .collection(data.replaceAll("/", "-"))
+            .document(selectedDoc).updateData({"concluido":concluido} );
+            
+  }
+
+  
+
   getTarefasFirebase(FirebaseUser fbUser,String data)async{
     bd.collection("tarefa_bd")
             .document(fbUser.uid)

@@ -7,25 +7,47 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DialogAddTask extends StatefulWidget {
-
   final FirebaseUser user;
+  final String datatarefa;
+  final String titleTarefa;
+  final String selectedDOC;
 
-  const DialogAddTask({Key key, this.user}) : super(key: key);
+  const DialogAddTask({
+    Key key,
+    this.user,
+    this.datatarefa,
+    this.titleTarefa, this.selectedDOC,
+  }) : super(key: key);
+
   @override
   _DialogAddTaskState createState() => _DialogAddTaskState();
 }
 
-class _DialogAddTaskState extends State<DialogAddTask> {
+class _DialogAddTaskState extends State<DialogAddTask>
+    with TickerProviderStateMixin {
   CalendarController calendarController = CalendarController();
   TextEditingController _textController = TextEditingController();
-  var visibleCalendar = true;
+  var visibleCalendar = false;
   var formatterDataString = new DateFormat('dd/MM/yyyy');
   var dataFormatada;
+  double alturaCalendar = 0;
+  DateTime selectedDate;
+
+  String selectedDateFormated;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (widget.titleTarefa != null) {
+      _textController.text = widget.titleTarefa;
+
+      //selectedDateFormated = formatterDataEnviada.format(DateTime.parse(widget.datatarefa));
+      //print("DATA ENVIADA FORMATADA : $selectedDateFormated");
+      selectedDate = DateTime.parse(widget.datatarefa);
+      //calendarController.selectedDay = DateTime.parse(widget.datatarefa);
+
+    }
     dataFormatada = formatterDataString.format(DateTime.now());
     print(dataFormatada);
   }
@@ -39,22 +61,79 @@ class _DialogAddTaskState extends State<DialogAddTask> {
           borderRadius: BorderRadius.circular(width * 0.030)),
       title: Text(
         "Adicionar",
-        textAlign: TextAlign.center,
+        //textAlign: TextAlign.center,
         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
       backgroundColor: Colors.white,
       actions: <Widget>[
-        Container(
-          width: width,
-          padding: EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            color: Colors.green,
-            border: Border.all(color: Colors.white,width:1),
-            borderRadius: BorderRadius.circular(15)
-          ),
-          child: Center(
-            child: Text("Salvar",style: TextStyle(color: Colors.white),),
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  if (visibleCalendar == false) {
+                    visibleCalendar = !visibleCalendar;
+                    alturaCalendar = 300;
+                    //homeStore.setAlturaCalendar(350);
+                  } else {
+                    visibleCalendar = !visibleCalendar;
+                    alturaCalendar = 0;
+                    //homeStore.setAlturaCalendar(0);
+                  }
+                });
+              },
+              child: Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: visibleCalendar == false //visibleCalendar == false
+                      ? Icon(
+                          Icons.calendar_today,
+                          color: Colors.white,
+                        )
+                      : Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        )),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            GestureDetector(
+              onTap: () {
+                if (widget.titleTarefa == null) {
+                  TarefaModel tm = TarefaModel(
+                      //dataformatada
+                      _textController.text,
+                      calendarController.selectedDay.toString(),
+                      false);
+                  FirebaseController fc = FirebaseController();
+                  fc.saveFirebase(tm, widget.user, dataFormatada);
+                  Navigator.pop(context);
+                }else{
+                  FirebaseController fc = FirebaseController();
+                  fc.updateTarefaTitleFirebase(widget.user, dataFormatada, widget.selectedDOC, _textController.text);
+                  
+                  Navigator.pop(context);
+                }
+              },
+              child: Container(
+                width: 200,
+                height: 50,
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(15)),
+                child: Center(
+                  child: Text(widget.titleTarefa == null ? "Salvar" : "Editar"),
+                ),
+              ),
+            )
+          ],
         )
       ],
       content: SingleChildScrollView(
@@ -70,26 +149,28 @@ class _DialogAddTaskState extends State<DialogAddTask> {
                     minLines: 1,
                     autofocus: false,
                     controller: _textController,
-                    onSubmitted: (_){
-                      TarefaModel tm = TarefaModel(_textController.text, dataFormatada, false);
+                    onSubmitted: (_) {
+                      /*TarefaModel tm = TarefaModel(//dataformatada
+                          _textController.text, calendarController.selectedDay.toString(), false);
                       FirebaseController fc = FirebaseController();
-                      fc.saveFirebase(tm, widget.user, dataFormatada);
+                      fc.saveFirebase(tm, widget.user, dataFormatada);*/
+
                       Navigator.pop(context);
                     },
                   ),
                 ),
-                
-                
               ],
             ),
             SizedBox(
               height: 10,
             ),
-            Visibility(
-              visible: visibleCalendar,
+            AnimatedSize(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              vsync: this,
               child: Container(
                 width: width,
-                height: 300,
+                height: alturaCalendar,
                 child: TableCalendar(
                   calendarController: calendarController,
                   locale: "pt_BR",
@@ -105,9 +186,11 @@ class _DialogAddTaskState extends State<DialogAddTask> {
                       ),
                   //rowHeight: 0,
                   initialCalendarFormat: CalendarFormat.month,
-                  //initialSelectedDay: DateTime.now(),
+                  initialSelectedDay:
+                      widget.datatarefa != null ? selectedDate : DateTime.now(),
 
                   onDaySelected: (date, List days) {
+                    print(date);
                     dataFormatada = formatterDataString.format(date);
                     print(dataFormatada);
                     setState(() {

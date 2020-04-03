@@ -29,6 +29,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   String data = "";
 
   HomeStore homeStore = HomeStore();
+  Map<DateTime,List<dynamic>> _events ;
+  
 
   _dialodAddTask() {
     showDialog(
@@ -47,7 +49,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     data = formatterDataString.format(dataAtual);
     homeStore.setDataFormatada(data);
-
+    
+    
     ///homeStore.resetAlturaListView(0);
   }
 
@@ -193,6 +196,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: Container(
                       height: homeStore.alturaCalendar, //alturaCalendar,
                       child: TableCalendar(
+                        events: _events,
                         availableGestures: AvailableGestures.none,
                         calendarController: calendarController,
                         locale: "pt_BR",
@@ -259,8 +263,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   itemBuilder: (context, index) {
                                     return TaskItem(
                                         title: documents[index].data["tarefa"],
-                                        concluido:
-                                            documents[index].data["concluido"],
+                                        concluido:documents[index].data["concluido"],
+                                        selectedDOC: documents[index].documentID,
+                                        dados: documents[index],
+                                        user: widget.user,
+                                        data: homeStore.dataFormatada,
                                         color: Colors.white //index %2 ==0 ? Colors.blue :Colors.orange
                                         );
                                   },
