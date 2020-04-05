@@ -12,41 +12,25 @@ class FirebaseController{
   FirebaseController();
 
   saveFirebase(TarefaModel tarefa, FirebaseUser fbUser, String data)async{
-
-    await bd.collection("tarefa_bd")
-            .document(fbUser.uid)
-            .collection(data.replaceAll("/", "-"))
-            .add(tarefa.toMap());
+    await bd.collection("tarefa_bd").document(fbUser.uid).collection(data.replaceAll("/", "-")).add(tarefa.toMap());
   }
+
 
   updateTarefaTitleFirebase(FirebaseUser fbUser, String data, String selectedDoc,String tarefaTitle)async{
-    await bd.collection("tarefa_bd")
-            .document(fbUser.uid)
-            .collection(data.replaceAll("/", "-"))
-            .document(selectedDoc).updateData({"tarefa":tarefaTitle} );
+    await bd.collection("tarefa_bd").document(fbUser.uid).collection(data.replaceAll("/", "-")).document(selectedDoc).updateData({"tarefa":tarefaTitle} );
   }
 
-  updadeStatusFirebase(FirebaseUser fbUser, String data,String selectedDoc, bool concluido)async{
 
-    await bd.collection("tarefa_bd")
-            .document(fbUser.uid)
-            .collection(data.replaceAll("/", "-"))
-            .document(selectedDoc).updateData({"concluido":concluido} );
-            
+  updadeStatusFirebase(FirebaseUser fbUser, String data,String selectedDoc, bool concluido)async{
+    await bd.collection("tarefa_bd").document(fbUser.uid).collection(data.replaceAll("/", "-")).document(selectedDoc).updateData({"concluido":concluido} );            
   }
 
   
-
-  getTarefasFirebase(FirebaseUser fbUser,String data)async{
-    bd.collection("tarefa_bd")
-            .document(fbUser.uid)
-            .collection(data.replaceAll("/", "-"))
-            .snapshots()
-            .listen((onData) {
-              onData.documents.forEach((d) {
-            print("FIREBASE:" + d.data.toString());
-          });
-    });
+  deleteTarefaFirebase(FirebaseUser fbUser,String data, String selectedDoc)async{
+    await bd.collection("tarefa_bd").document(fbUser.uid).collection(data.replaceAll("/", "-")).document(selectedDoc).delete();
   }
+  
+
+ 
 
 }

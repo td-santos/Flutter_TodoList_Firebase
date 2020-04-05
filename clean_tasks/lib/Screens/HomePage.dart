@@ -12,9 +12,11 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomePage extends StatefulWidget {
+
   final FirebaseUser user;
 
   const HomePage({Key key, this.user}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -22,15 +24,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   CalendarController calendarController = CalendarController();
 
-  Firestore bd = Firestore.instance;
-  FirebaseController fc = FirebaseController();
-  var formatterDataString = new DateFormat('dd/MM/yyyy');
-  var dataAtual = new DateTime.now();
+  DateFormat formatterDataString = new DateFormat('dd/MM/yyyy');
+  DateTime dataAtual = new DateTime.now();
   String data = "";
 
   HomeStore homeStore = HomeStore();
-  Map<DateTime,List<dynamic>> _events ;
-  
 
   _dialodAddTask() {
     showDialog(
@@ -49,18 +47,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     data = formatterDataString.format(dataAtual);
     homeStore.setDataFormatada(data);
-    
-    
+
     ///homeStore.resetAlturaListView(0);
   }
 
   @override
   Widget build(BuildContext context) {
+
     double alturaTotal = MediaQuery.of(context).size.height;
-    homeStore.setAlturaListView(alturaTotal);
+    //homeStore.setAlturaListView(alturaTotal);
     //homeStore.resetAlturaListView(0);
 
     return Scaffold(
+      
       body: SingleChildScrollView(
         physics: ClampingScrollPhysics(),
         child: Padding(
@@ -196,7 +195,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: Container(
                       height: homeStore.alturaCalendar, //alturaCalendar,
                       child: TableCalendar(
-                        events: _events,
                         availableGestures: AvailableGestures.none,
                         calendarController: calendarController,
                         locale: "pt_BR",
@@ -237,13 +235,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     duration: Duration(milliseconds: 300),
                     vsync: this,
                     child: SizedBox(
-                        height: homeStore.alturaListView,
+                        height: alturaTotal,//homeStore.alturaListView,
                         child: StreamBuilder<QuerySnapshot>(
                           stream: Firestore.instance
                               .collection("tarefa_bd")
                               .document(widget.user.uid)
-                              .collection(
-                                  homeStore.dataFormatada.replaceAll("/", "-"))
+                              .collection(homeStore.dataFormatada.replaceAll("/", "-")).orderBy("data")
                               .snapshots(),
                           builder: (context, snapshot) {
                             switch (snapshot.connectionState) {
@@ -254,24 +251,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 );
 
                               default:
+                            
                                 List<DocumentSnapshot> documents =
                                     snapshot.data.documents;
+
+                                    if(documents.length<1){
+                                      return Center(child: CircularProgressIndicator(),);
+                                    }else{
 
                                 return ListView.builder(
                                   padding: EdgeInsets.only(bottom: 200),
                                   itemCount: documents.length,
+                                  
                                   itemBuilder: (context, index) {
                                     return TaskItem(
-                                        title: documents[index].data["tarefa"],
-                                        concluido:documents[index].data["concluido"],
-                                        selectedDOC: documents[index].documentID,
-                                        dados: documents[index],
-                                        user: widget.user,
-                                        data: homeStore.dataFormatada,
-                                        color: Colors.white //index %2 ==0 ? Colors.blue :Colors.orange
-                                        );
+                                      title: documents[index].data["tarefa"],
+                                      concluido:
+                                          documents[index].data["concluido"],
+                                      selectedDOC: documents[index].documentID,
+                                      dados: documents[index],
+                                      user: widget.user,
+                                      data: homeStore.dataFormatada,
+                                    );
                                   },
                                 );
+                                    }
                             }
                           },
                         )),

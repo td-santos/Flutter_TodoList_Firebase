@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DialogAddTask extends StatefulWidget {
+
   final FirebaseUser user;
   final String datatarefa;
   final String titleTarefa;
@@ -16,24 +17,25 @@ class DialogAddTask extends StatefulWidget {
     Key key,
     this.user,
     this.datatarefa,
-    this.titleTarefa, this.selectedDOC,
+    this.titleTarefa,
+    this.selectedDOC,
   }) : super(key: key);
 
   @override
   _DialogAddTaskState createState() => _DialogAddTaskState();
 }
 
-class _DialogAddTaskState extends State<DialogAddTask>
-    with TickerProviderStateMixin {
+class _DialogAddTaskState extends State<DialogAddTask> with TickerProviderStateMixin {
+
   CalendarController calendarController = CalendarController();
-  TextEditingController _textController = TextEditingController();
-  var visibleCalendar = false;
-  var formatterDataString = new DateFormat('dd/MM/yyyy');
-  var dataFormatada;
+  TextEditingController _textController = TextEditingController();  
+  DateFormat formatterDataString = new DateFormat('dd/MM/yyyy');
+  String dataFormatada;
+  bool visibleCalendar = false;
   double alturaCalendar = 0;
   DateTime selectedDate;
 
-  String selectedDateFormated;
+  
 
   @override
   void initState() {
@@ -41,13 +43,10 @@ class _DialogAddTaskState extends State<DialogAddTask>
     super.initState();
     if (widget.titleTarefa != null) {
       _textController.text = widget.titleTarefa;
-
-      //selectedDateFormated = formatterDataEnviada.format(DateTime.parse(widget.datatarefa));
-      //print("DATA ENVIADA FORMATADA : $selectedDateFormated");
-      selectedDate = DateTime.parse(widget.datatarefa);
-      //calendarController.selectedDay = DateTime.parse(widget.datatarefa);
+      selectedDate = DateTime.parse(widget.datatarefa);     
 
     }
+
     dataFormatada = formatterDataString.format(DateTime.now());
     print(dataFormatada);
   }
@@ -57,19 +56,19 @@ class _DialogAddTaskState extends State<DialogAddTask>
     double width = MediaQuery.of(context).size.width;
 
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(width * 0.030)),
-      title: Text(
-        "Adicionar",
-        //textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(width * 0.030)),
+      title: Text("Adicionar",style: TextStyle(
+        fontWeight: FontWeight.bold, color: Colors.white),
       ),
       backgroundColor: Colors.white,
+
       actions: <Widget>[
+
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -90,7 +89,7 @@ class _DialogAddTaskState extends State<DialogAddTask>
                   decoration: BoxDecoration(
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(15)),
-                  child: visibleCalendar == false //visibleCalendar == false
+                  child: visibleCalendar == false 
                       ? Icon(
                           Icons.calendar_today,
                           color: Colors.white,
@@ -106,19 +105,16 @@ class _DialogAddTaskState extends State<DialogAddTask>
             GestureDetector(
               onTap: () {
                 if (widget.titleTarefa == null) {
-                  TarefaModel tm = TarefaModel(
-                      //dataformatada
-                      _textController.text,
-                      calendarController.selectedDay.toString(),
-                      false);
+                  TarefaModel tm = TarefaModel(_textController.text,calendarController.selectedDay.toString(),false);
                   FirebaseController fc = FirebaseController();
                   fc.saveFirebase(tm, widget.user, dataFormatada);
                   Navigator.pop(context);
-                }else{
+
+                } else {
                   FirebaseController fc = FirebaseController();
-                  fc.updateTarefaTitleFirebase(widget.user, dataFormatada, widget.selectedDOC, _textController.text);
-                  
+                  fc.updateTarefaTitleFirebase(widget.user, dataFormatada,widget.selectedDOC, _textController.text);
                   Navigator.pop(context);
+
                 }
               },
               child: Container(
@@ -144,19 +140,11 @@ class _DialogAddTaskState extends State<DialogAddTask>
               children: <Widget>[
                 Flexible(
                   child: TextField(
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.multiline,
                     maxLines: 15,
                     minLines: 1,
-                    autofocus: false,
+                    autofocus: true,
                     controller: _textController,
-                    onSubmitted: (_) {
-                      /*TarefaModel tm = TarefaModel(//dataformatada
-                          _textController.text, calendarController.selectedDay.toString(), false);
-                      FirebaseController fc = FirebaseController();
-                      fc.saveFirebase(tm, widget.user, dataFormatada);*/
-
-                      Navigator.pop(context);
-                    },
                   ),
                 ),
               ],
@@ -180,22 +168,14 @@ class _DialogAddTaskState extends State<DialogAddTask>
                     centerHeaderTitle: true,
                   ),
                   calendarStyle: CalendarStyle(outsideDaysVisible: false),
-                  daysOfWeekStyle: DaysOfWeekStyle(
-                      //weekdayStyle: TextStyle(color: Colors.transparent),
-                      //weekendStyle: TextStyle(color: Colors.transparent),
-                      ),
-                  //rowHeight: 0,
+                  daysOfWeekStyle: DaysOfWeekStyle(),                  
                   initialCalendarFormat: CalendarFormat.month,
-                  initialSelectedDay:
-                      widget.datatarefa != null ? selectedDate : DateTime.now(),
-
+                  initialSelectedDay:widget.datatarefa != null ? selectedDate : DateTime.now(),
                   onDaySelected: (date, List days) {
                     print(date);
                     dataFormatada = formatterDataString.format(date);
                     print(dataFormatada);
-                    setState(() {
-                      //visibleCalendar = false;
-                    });
+                    
                   },
                 ),
               ),

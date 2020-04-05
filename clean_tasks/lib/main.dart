@@ -9,6 +9,7 @@ main(List<String> args) {
     runApp(MaterialApp(
     home: LoginPage(),
     debugShowCheckedModeBanner: false,
+    theme: ThemeData.light(),
     
   ));
   });
