@@ -60,7 +60,7 @@ class _DialogAddTaskState extends State<DialogAddTask> with TickerProviderStateM
       title: Text("Adicionar",style: TextStyle(
         fontWeight: FontWeight.bold, color: Colors.white),
       ),
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
 
       actions: <Widget>[
 

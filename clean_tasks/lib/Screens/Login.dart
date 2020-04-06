@@ -1,7 +1,9 @@
 import 'package:clean_tasks/Screens/HomePage.dart';
+import 'package:clean_tasks/TemaDark.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,6 +15,14 @@ class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   FirebaseUser currentUser;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool visibleFloatButtom =false;
+  bool darkMode;
+  TemaDark temaDark = TemaDark();
+
+  initPrefs()async{
+    final prefs = await SharedPreferences.getInstance();
+    darkMode = prefs.getBool("darkMode");
+  }
 
   Future<FirebaseUser> _getUser()async{
     
@@ -50,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
     }else{
       Navigator.push(context, MaterialPageRoute(
         builder: (context)=> HomePage(
-          user: user,
+          user: user,dark: darkMode,
         )
       ));
     }
@@ -60,14 +70,28 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    initPrefs();
+    
     FirebaseAuth.instance.onAuthStateChanged.listen((user){
       currentUser = user;
+      
       if(currentUser != null){
-         Navigator.push(context, MaterialPageRoute(
+        setState(() {
+        visibleFloatButtom = false;
+      });
+        Future.delayed(Duration(seconds: 3),(){
+          Navigator.push(context, MaterialPageRoute(
         builder: (context)=> HomePage(
-          user: user,
+          user: user,dark: darkMode,
         )
       ));
+        });
+         
+      }else{
+        _getUser();
+        setState(() {
+        visibleFloatButtom = true;
+      });
       }
     });
     
@@ -76,35 +100,27 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: darkMode ==true ?temaDark.scafoldcolor : null,
       key: _scaffoldKey,
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(15),
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50),
-                  bottomRight: Radius.circular(50)
-                )
-              ),
-              child: FlatButton(
-                onPressed: (){
-                  _logIn();
-                },
-                child: Text("Login Google",style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25
-                ),),
-              ),
-            ),
-          ),
-        ),
+        
+          child: Image.asset("assets/peoples_vector.png",fit: BoxFit.cover,),
+        
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton:  Visibility(
+        visible: visibleFloatButtom,
+        child: Padding(
+        padding: EdgeInsets.only(bottom: 15),
+        child: FloatingActionButton(
+        backgroundColor: Colors.red,
+        child: Text("G", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 25),),
+        onPressed: (){
+          _logIn();
+          
+        }),)),
     );
   }
 }

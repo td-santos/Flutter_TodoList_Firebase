@@ -1,6 +1,8 @@
 import 'package:clean_tasks/Controllers/FirebaseController.dart';
+import 'package:clean_tasks/Controllers/GoogleLogin.dart';
 import 'package:clean_tasks/Screens/Login.dart';
 import 'package:clean_tasks/Stores/home_store.dart';
+import 'package:clean_tasks/TemaDark.dart';
 import 'package:clean_tasks/Widgets/DialogAddTask.dart';
 import 'package:clean_tasks/Widgets/TaskItem.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,27 +10,52 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomePage extends StatefulWidget {
 
   final FirebaseUser user;
+  final bool dark;
 
-  const HomePage({Key key, this.user}) : super(key: key);
+  const HomePage({Key key, this.user, this.dark}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  CalendarController calendarController = CalendarController();
 
+  
+
+  CalendarController calendarController = CalendarController();
   DateFormat formatterDataString = new DateFormat('dd/MM/yyyy');
   DateTime dataAtual = new DateTime.now();
   String data = "";
+  //SharedPreferences prefs = SharedPreferences.getInstance();
+  bool darkMode ;
+  TemaDark temaDark =TemaDark();
 
   HomeStore homeStore = HomeStore();
+
+
+  salvarShared(bool darkmode) async {
+    
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("darkMode", darkmode);
+
+    print("(SalvarPrefs): ");
+    //initState();
+  }
+
+  initPrefs()async{
+    final prefs = await SharedPreferences.getInstance();
+    darkMode = prefs.getBool("darkMode");
+  }
+
+  
 
   _dialodAddTask() {
     showDialog(
@@ -40,13 +67,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         });
   }
 
+  
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    
+    darkMode = widget.dark;
+    //initPrefs();
+    
 
     data = formatterDataString.format(dataAtual);
     homeStore.setDataFormatada(data);
+    
 
     ///homeStore.resetAlturaListView(0);
   }
@@ -59,10 +93,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     //homeStore.resetAlturaListView(0);
 
     return Scaffold(
-      
+      //backgroundColor: darkMode == true ?temaDark.scafoldcolor: null,
       body: SingleChildScrollView(
-        physics: ClampingScrollPhysics(),
-        child: Padding(
+        physics: NeverScrollableScrollPhysics(),
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+
+          color: darkMode == true ?temaDark.scafoldcolor: Colors.white,
+          /*decoration: BoxDecoration(
+            image:DecorationImage(
+              image: AssetImage("assets/peoples_vector.png"),
+              alignment: Alignment.center,
+              fit: BoxFit.contain)
+          ),*/
           padding: EdgeInsets.only(left: 15, right: 15, top: 50),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,6 +130,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+                  
                   GestureDetector(
                     onTap: () {
                       //_saveFirebase();
@@ -97,11 +141,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         height: 50,
                         width: 50,
                         decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: darkMode ==true ? temaDark.buttomAddcolor:Colors.grey[200],
                             borderRadius: BorderRadius.circular(15)),
                         child: Icon(
                           Icons.add,
-                          color: Colors.blue[600],
+                          color: darkMode == true ? temaDark.iconAddcolor: Colors.blue[600],
                         )),
                   )
                 ],
@@ -125,6 +169,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             child: Text(
                               "Hoje",
                               style: TextStyle(
+                                color: darkMode == true ?temaDark.textDiaAtualcolor: null,
                                   fontSize: homeStore.alturaHOJE,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -199,11 +244,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         calendarController: calendarController,
                         locale: "pt_BR",
                         headerStyle: HeaderStyle(
+                          titleTextStyle: TextStyle(color: darkMode == true ? temaDark.calendarHeadcolor : null),
                           formatButtonShowsNext: false,
                           formatButtonVisible: false,
                           centerHeaderTitle: true,
                         ),
-                        calendarStyle: CalendarStyle(outsideDaysVisible: false),
+                        calendarStyle: CalendarStyle(
+
+                          outsideDaysVisible: false,
+                          //weekendStyle: TextStyle(color: Colors.yellow),
+                          weekdayStyle: TextStyle(color: darkMode == true ? temaDark.calendarDayscolor:null) 
+                          ),
                         initialCalendarFormat: CalendarFormat.month,
                         onDaySelected: (date, List days) {
                           if (homeStore.dataFormatada !=
@@ -256,7 +307,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     snapshot.data.documents;
 
                                     if(documents.length<1){
-                                      return Center(child: CircularProgressIndicator(),);
+                                      return Container();//return Container(child: Image.asset("assets/peoples_vector.png",fit: BoxFit.scaleDown,),);
                                     }else{
 
                                 return ListView.builder(
@@ -281,11 +332,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         )),
                   );
                 },
+              ),
+              SizedBox(
+                height: 200,
               )
             ],
           ),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 15),
+        child: FloatingActionButton(
+          child: Icon(Icons.settings),
+          onPressed: (){
+            if(darkMode == null){
+                darkMode =false;
+              }
+
+            setState(() {
+              
+              darkMode =!darkMode;
+              salvarShared(darkMode);
+              print("DarkMode= $darkMode");
+            });
+            
+            
+
+          },
+          ),),
+      
+      
     );
   }
 }
