@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'DialogAddTask.dart';
 
 class TaskItem extends StatefulWidget {
+  final bool darkMode;
   final bool concluido;
   final String title;
 
@@ -15,6 +16,7 @@ class TaskItem extends StatefulWidget {
   final String data;
   final FirebaseUser user;
   final DocumentSnapshot dados;
+  final bool lastItem;
 
   const TaskItem(
       {Key key,
@@ -23,7 +25,7 @@ class TaskItem extends StatefulWidget {
       this.selectedDOC,
       this.data,
       this.user,
-      this.dados})
+      this.dados, this.lastItem, this.darkMode})
       : super(key: key);
 
   @override
@@ -44,6 +46,7 @@ class _TaskItemState extends State<TaskItem> {
             titleTarefa: widget.title,
             datatarefa: widget.dados.data["data"],
             selectedDOC: widget.selectedDOC,
+            darkMode: widget.darkMode,
           );
         });
   }
@@ -65,7 +68,9 @@ class _TaskItemState extends State<TaskItem> {
             //padding: EdgeInsets.only(top: 0,bottom: 12),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: widget.concluido == true ? Colors.orange[100] : Colors.orange[300],
+              color:widget.darkMode==true
+              ? widget.concluido == true ? Colors.orange[100] : Colors.orange
+              : widget.concluido == true ? Colors.orange[100] : Colors.orange[300],
               borderRadius: BorderRadius.circular(15),
               /*boxShadow: [BoxShadow(
                 color: Colors.grey[300],
@@ -171,7 +176,7 @@ class _TaskItemState extends State<TaskItem> {
               ],
             )),
         SizedBox(
-          height: 10,
+          height: widget.lastItem ==true ?100:10,
         ),
       ],
     );

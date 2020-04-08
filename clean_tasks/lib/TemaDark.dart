@@ -12,6 +12,7 @@ Color textDiaAtualcolor = Colors.grey[300];
 Color calendarDayscolor = Colors.grey[400];
 Color buttomAddcolor = Colors.grey[900];
 Color iconAddcolor = Colors.grey[100];
+Color dialogColor = Colors.grey[850];
 
 
 }
