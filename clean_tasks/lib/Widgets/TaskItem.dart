@@ -69,7 +69,7 @@ class _TaskItemState extends State<TaskItem> {
             width: double.infinity,
             decoration: BoxDecoration(
               color:widget.darkMode==true
-              ? widget.concluido == true ? Colors.orange[100] : Colors.orange
+              ? widget.concluido == true ? Colors.orange[200] : Colors.orange
               : widget.concluido == true ? Colors.orange[100] : Colors.orange[300],
               borderRadius: BorderRadius.circular(15),
               /*boxShadow: [BoxShadow(

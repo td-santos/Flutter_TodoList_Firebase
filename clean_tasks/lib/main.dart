@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-salvarShared(bool darkmode) async {    
+salvarSharedInitial({bool darkmode,bool orderAsc}) async {    
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool("darkMode", darkmode);
-    print("(SalvarPrefs): ");    
+    await prefs.setBool("orderAsc", orderAsc);
+    print("(SalvarPrefs MAIN): ");    
   }
   
 
@@ -15,32 +16,29 @@ main(List<String> args) async {
 final prefs = await SharedPreferences.getInstance();
 
 bool darkMode;
+bool orderAsc;
 darkMode = prefs.getBool("darkMode");
+orderAsc = prefs.getBool("orderAsc");
 if(darkMode == null){
   darkMode = false;
-  salvarShared(darkMode);
+  salvarSharedInitial(darkmode:darkMode);
+}
+if(orderAsc == null){
+  orderAsc = true;
+  salvarSharedInitial(orderAsc: orderAsc);
 }
 
-print("DARKMODE: $darkMode");
 
-
-/*WidgetsFlutterBinding.ensureInitialized();
-ThemeData tema;
-final prefs = await SharedPreferences.getInstance();
-
-print("MAIN DARK MODE: ${prefs.getBool("darkMode")}");
-
-if(prefs.getBool("darkMode") != true){
-  tema = ThemeData.light();
-}else{
-  tema = ThemeData.dark();
-}*/
+print("DARKMODE MAIN: $darkMode");
+print("ORDER ASC MAIN: $orderAsc");
 
   initializeDateFormatting().then((_) {
     runApp(MaterialApp(
       home: LoginPage(),
       debugShowCheckedModeBanner: false,
-      //theme: tema,
+      theme: ThemeData(
+        scaffoldBackgroundColor: darkMode ==true ?Colors.grey[850]: Colors.white
+      ),
     ));
   });
 }

@@ -1,14 +1,24 @@
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 part 'home_store.g.dart';
 
 class HomeStore = _HomeStoreBase with _$HomeStore;
 
 abstract class _HomeStoreBase with Store {
 
-  
+  //final sp = SharedPreferences.getInstance();
     
-      
-    
+  @observable
+  bool darkMode ;     
+
+  @action
+  void setDarkMode(bool value) => darkMode = value;
+
+  @observable
+  bool orderAsc ;
+
+  @action
+  void setOrderCres(bool value) => orderAsc = value; 
   
 
   @observable

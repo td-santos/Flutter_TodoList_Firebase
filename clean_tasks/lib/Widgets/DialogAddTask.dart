@@ -58,81 +58,7 @@ class _DialogAddTaskState extends State<DialogAddTask>
       backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(width * 0.040)),
-      //title: Text("Adicionar",style: TextStyle(
-      //  fontWeight: FontWeight.bold, color: Colors.white),
-      //),
-      //backgroundColor: Colors.white,
-
-      /*actions: <Widget>[
-
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (visibleCalendar == false) {
-                    visibleCalendar = !visibleCalendar;
-                    alturaCalendar = 300;
-                    //homeStore.setAlturaCalendar(350);
-                  } else {
-                    visibleCalendar = !visibleCalendar;
-                    alturaCalendar = 0;
-                    //homeStore.setAlturaCalendar(0);
-                  }
-                });
-              },
-              child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: visibleCalendar == false 
-                      ? Icon(
-                          Icons.calendar_today,
-                          color: Colors.white,
-                        )
-                      : Icon(
-                          Icons.close,
-                          color: Colors.white,
-                        )),
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            GestureDetector(
-              onTap: () {
-                if (widget.titleTarefa == null) {
-                  TarefaModel tm = TarefaModel(_textController.text,calendarController.selectedDay.toString(),false);
-                  FirebaseController fc = FirebaseController();
-                  fc.saveFirebase(tm, widget.user, dataFormatada);
-                  Navigator.pop(context);
-
-                } else {
-                  FirebaseController fc = FirebaseController();
-                  fc.updateTarefaTitleFirebase(widget.user, dataFormatada,widget.selectedDOC, _textController.text);
-                  Navigator.pop(context);
-
-                }
-              },
-              child: Container(
-                width: 200,
-                height: 50,
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(15)),
-                child: Center(
-                  child: Text(widget.titleTarefa == null ? "Salvar" : "Editar"),
-                ),
-              ),
-            )
-          ],
-        )
-      ],*/
+      
       content: SingleChildScrollView(
           child: Container(
         width: width,
@@ -242,7 +168,7 @@ class _DialogAddTaskState extends State<DialogAddTask>
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 20,
             ),
             GestureDetector(
               onTap: (){

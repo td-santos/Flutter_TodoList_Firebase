@@ -4,6 +4,7 @@ import 'package:clean_tasks/Screens/Login.dart';
 import 'package:clean_tasks/Stores/home_store.dart';
 import 'package:clean_tasks/TemaDark.dart';
 import 'package:clean_tasks/Widgets/DialogAddTask.dart';
+import 'package:clean_tasks/Widgets/DialogConta.dart';
 import 'package:clean_tasks/Widgets/TaskItem.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,8 +19,9 @@ import 'package:table_calendar/table_calendar.dart';
 class HomePage extends StatefulWidget {
   final FirebaseUser user;
   final bool dark;
+  final bool orderAsc;
 
-  const HomePage({Key key, this.user, this.dark}) : super(key: key);
+  const HomePage({Key key, this.user, this.dark, this.orderAsc}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -32,6 +34,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   String data = "";
   //SharedPreferences prefs = SharedPreferences.getInstance();
   bool darkMode;
+  bool orderAsc;
   TemaDark temaDark = TemaDark();
   bool dadosFirebase;
 
@@ -41,13 +44,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool("darkMode", darkmode);
 
-    print("(SalvarPrefs): ");
+    print("(SalvarPrefs Dark): $darkmode");
     //initState();
   }
 
-  initPrefs() async {
+  salvarOrderListShared(bool orderasc) async {
     final prefs = await SharedPreferences.getInstance();
-    darkMode = prefs.getBool("darkMode");
+    await prefs.setBool("orderAsc", orderasc);
+
+    print("(SalvarPrefs order): $orderAsc");
+    
+  }
+
+  /*initPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    homeStore.setDarkMode(prefs.getBool("darkMode"));
+    print("INITPREFS DARK: ${homeStore.darkMode}");
+    //darkMode = prefs.getBool("darkMode");
+  }*/
+  initPrefs() async {
+    //final prefs = await SharedPreferences.getInstance();
+    homeStore.setDarkMode(widget.dark);
+    homeStore.setOrderCres(widget.orderAsc);
+    print("INITPREFS DARK: ${homeStore.darkMode}");
+    print("INITPREFS ORDER ASC: ${homeStore.orderAsc}");
+    //darkMode = prefs.getBool("darkMode");
   }
 
   _dialodAddTask() {
@@ -56,8 +77,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         builder: (context) {
           return DialogAddTask(
             user: widget.user,
-            darkMode: darkMode,
+            darkMode: homeStore.darkMode,
           );
+        });
+  }
+
+  Future<bool>_dialodConta() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return _dialogPerfil(MediaQuery.of(context).size.width);
+          //return DialogConta(
+          //  user: widget.user,
+         //   darkMode: homeStore.darkMode,
+         // );
         });
   }
 
@@ -65,8 +98,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    darkMode = widget.dark;
+    
+    //darkMode = widget.dark;
     data = formatterDataString.format(dataAtual);
     homeStore.setDataFormatada(data);
     
@@ -74,19 +107,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    initPrefs();
     double alturaTotal = MediaQuery.of(context).size.height;
     //homeStore.setAlturaListView(alturaTotal);
     //homeStore.resetAlturaListView(0);
+    
 
-    return Scaffold(
+    return WillPopScope(onWillPop: _dialodConta,
+    child: Scaffold(
       //backgroundColor: darkMode == true ?temaDark.scafoldcolor: null,
       body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
-        child: AnimatedContainer(
+        child: Observer(
+          builder: (_){
+            return AnimatedContainer(
           duration: Duration(milliseconds: 300),
           //color: darkMode == true ? temaDark.scafoldcolor : Colors.white,
           decoration: BoxDecoration(
-            color: darkMode == true ? temaDark.scafoldcolor : Colors.white,
+            color: homeStore.darkMode == true ? temaDark.scafoldcolor : Colors.white,
             /*image:DecorationImage(
               image:dadosFirebase == true? AssetImage(""): AssetImage("assets/phone_people.png"),
               alignment: Alignment.center,
@@ -103,10 +141,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     children: <Widget>[
                       GestureDetector(
                         onLongPress: () {
-                          FirebaseAuth auth = FirebaseAuth.instance;
-                          auth.signOut();
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (context) => LoginPage()));
+                         // FirebaseAuth auth = FirebaseAuth.instance;
+                         // auth.signOut();
+                         // Navigator.pushReplacement(context,
+                         //     MaterialPageRoute(builder: (context) => LoginPage()));
                         },
                         child: Container(
                           height: 50,
@@ -121,7 +159,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       SizedBox(width: 10,),
                       GestureDetector(
                         onTap: (){
-
+                          _dialodConta();
                         },
                         child: Icon(Icons.sort,size: 30,color: darkMode == true ?Colors.black:Colors.grey[400],))
                     ],
@@ -136,13 +174,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         height: 50,
                         width: 50,
                         decoration: BoxDecoration(
-                            color: darkMode == true
+                            color: homeStore.darkMode == true
                                 ? temaDark.buttomAddcolor
                                 : Colors.grey[200],
                             borderRadius: BorderRadius.circular(15)),
                         child: Icon(
                           Icons.add,
-                          color: darkMode == true
+                          color: homeStore.darkMode == true
                               ? temaDark.iconAddcolor
                               : Colors.blue[600],
                         )),
@@ -168,7 +206,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             child: Text(
                               "Hoje",
                               style: TextStyle(
-                                  color: darkMode == true
+                                  color: homeStore.darkMode == true
                                       ? temaDark.textDiaAtualcolor
                                       : null,
                                   fontSize: homeStore.alturaHOJE,
@@ -212,7 +250,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             height: 50,
                             width: 50,
                             decoration: BoxDecoration(
-                                color: darkMode == true? Colors.blue[800] : Colors.blue,
+                                color: homeStore.darkMode == true? Colors.blue[800] : Colors.blue,
                                 borderRadius: BorderRadius.circular(15)),
                             child: homeStore.visibleCalendar ==
                                     false //visibleCalendar == false
@@ -247,7 +285,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         locale: "pt_BR",
                         headerStyle: HeaderStyle(
                           titleTextStyle: TextStyle(
-                              color: darkMode == true
+                              color: homeStore.darkMode == true
                                   ? temaDark.calendarHeadcolor
                                   : null),
                           formatButtonShowsNext: false,
@@ -258,7 +296,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             outsideDaysVisible: false,
                             //weekendStyle: TextStyle(color: Colors.yellow),
                             weekdayStyle: TextStyle(
-                                color: darkMode == true
+                                color: homeStore.darkMode == true
                                     ? temaDark.calendarDayscolor
                                     : null)),
                         initialCalendarFormat: CalendarFormat.month,
@@ -297,9 +335,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           stream: Firestore.instance
                               .collection("tarefa_bd")
                               .document(widget.user.uid)
-                              .collection(
-                                  homeStore.dataFormatada.replaceAll("/", "-"))
-                              .orderBy("data")
+                              .collection(homeStore.dataFormatada.replaceAll("/", "-"))
+                              .orderBy("data",descending: ! homeStore.orderAsc)
                               .snapshots(),
                           builder: (context, snapshot) {
                             switch (snapshot.connectionState) {
@@ -327,14 +364,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       
                                       return TaskItem(
                                         title: documents[index].data["tarefa"],
-                                        concluido:
-                                            documents[index].data["concluido"],
-                                        selectedDOC:
-                                            documents[index].documentID,
+                                        concluido: documents[index].data["concluido"],
+                                        selectedDOC: documents[index].documentID,
                                         dados: documents[index],
                                         user: widget.user,
                                         data: homeStore.dataFormatada,
-                                        darkMode: darkMode,
+                                        darkMode: homeStore.darkMode,
                                         lastItem: documents[index]== documents.last ?true:false,
                                       );
                                     },
@@ -351,9 +386,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               )
             ],
           ),
-        ),
+        );
+          }),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      /*floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: 15),
         child: FloatingActionButton(
@@ -363,13 +399,156 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               darkMode = false;
             }
 
-            setState(() {
+            //setState(() {
               darkMode = !darkMode;
+              homeStore.setDarkMode(darkMode);
+              
               salvarShared(darkMode);
-              print("DarkMode= $darkMode");
-            });
+              print("DarkMode= ${homeStore.darkMode}");
+           // });
           },
         ),
+      ),*/
+    ),);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+
+  Widget _dialogPerfil(double width){
+    return AlertDialog(
+      backgroundColor: Colors.transparent,
+      content: SingleChildScrollView(
+        child: Observer(builder: (_){
+          return AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          width: width,
+          decoration: BoxDecoration(
+              color:
+                  homeStore.darkMode == true ? temaDark.dialogColor : Colors.white,
+              borderRadius: BorderRadius.circular(20)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
+                child: Container(
+                  height: 100,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.network(
+                      widget.user.photoUrl,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10, right: 10, bottom: 0),
+                child: Text(
+                  widget.user.displayName,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: homeStore.darkMode == true
+                          ? Colors.grey[400]
+                          : Colors.black),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                child: Text(
+                  widget.user.email,
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: homeStore.darkMode == true
+                          ? Colors.grey[600]
+                          : Colors.grey[600]),
+                ),
+              ),
+              Padding(
+                padding:
+                    EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      "Modo Escuro",
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: homeStore.darkMode == true
+                              ? Colors.grey[400]
+                              : Colors.black),
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 5),
+                    child: Switch(
+                      value: homeStore.darkMode, 
+                      onChanged: (value){
+                        darkMode = value;
+                        homeStore.setDarkMode(value);
+                        salvarShared(homeStore.darkMode);
+                      }),)
+                    
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 5,left: 10,right: 10,bottom: 10),
+                child: Row(
+                  children: <Widget>[
+                    Text("Ordenação Crescente",
+                    style: TextStyle(
+                          fontSize: 17,
+                          color: homeStore.darkMode == true
+                              ? Colors.grey[400]
+                              : Colors.black),
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 5),
+                    child: Observer(
+                      builder: (contex){
+                        return Switch(
+                      value: homeStore.orderAsc, 
+                      onChanged: (value){
+                        orderAsc = value;
+                        //value = !value;
+                        homeStore.setOrderCres(value);
+                        salvarOrderListShared(homeStore.orderAsc);
+                      });
+                      }),)
+                  ],
+                ),
+                ),
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: GestureDetector(
+                  onTap: (){
+                    FirebaseAuth auth = FirebaseAuth.instance;
+                          auth.signOut();
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                  child: Container(
+                  width: width,
+                  height: 60,
+                  decoration: BoxDecoration(
+                      color: Colors.red[400],
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20))),
+                  child: Center(
+                    child: Text(
+                      "Fazer LogOff",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey[850],
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+                ),
+              )
+            ],
+          ),
+        );
+        })
       ),
     );
   }

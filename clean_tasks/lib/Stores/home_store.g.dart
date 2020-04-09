@@ -9,6 +9,40 @@ part of 'home_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$HomeStore on _HomeStoreBase, Store {
+  final _$darkModeAtom = Atom(name: '_HomeStoreBase.darkMode');
+
+  @override
+  bool get darkMode {
+    _$darkModeAtom.context.enforceReadPolicy(_$darkModeAtom);
+    _$darkModeAtom.reportObserved();
+    return super.darkMode;
+  }
+
+  @override
+  set darkMode(bool value) {
+    _$darkModeAtom.context.conditionallyRunInAction(() {
+      super.darkMode = value;
+      _$darkModeAtom.reportChanged();
+    }, _$darkModeAtom, name: '${_$darkModeAtom.name}_set');
+  }
+
+  final _$orderAscAtom = Atom(name: '_HomeStoreBase.orderAsc');
+
+  @override
+  bool get orderAsc {
+    _$orderAscAtom.context.enforceReadPolicy(_$orderAscAtom);
+    _$orderAscAtom.reportObserved();
+    return super.orderAsc;
+  }
+
+  @override
+  set orderAsc(bool value) {
+    _$orderAscAtom.context.conditionallyRunInAction(() {
+      super.orderAsc = value;
+      _$orderAscAtom.reportChanged();
+    }, _$orderAscAtom, name: '${_$orderAscAtom.name}_set');
+  }
+
   final _$alturaCalendarAtom = Atom(name: '_HomeStoreBase.alturaCalendar');
 
   @override
@@ -123,6 +157,26 @@ mixin _$HomeStore on _HomeStoreBase, Store {
       ActionController(name: '_HomeStoreBase');
 
   @override
+  void setDarkMode(bool value) {
+    final _$actionInfo = _$_HomeStoreBaseActionController.startAction();
+    try {
+      return super.setDarkMode(value);
+    } finally {
+      _$_HomeStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setOrderCres(bool value) {
+    final _$actionInfo = _$_HomeStoreBaseActionController.startAction();
+    try {
+      return super.setOrderCres(value);
+    } finally {
+      _$_HomeStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setAlturaCalendar(double value) {
     final _$actionInfo = _$_HomeStoreBaseActionController.startAction();
     try {
@@ -185,7 +239,7 @@ mixin _$HomeStore on _HomeStoreBase, Store {
   @override
   String toString() {
     final string =
-        'alturaCalendar: ${alturaCalendar.toString()},visibleCalendar: ${visibleCalendar.toString()},alturaData: ${alturaData.toString()},alturaHOJE: ${alturaHOJE.toString()},dataFormatada: ${dataFormatada.toString()},alturaListView: ${alturaListView.toString()}';
+        'darkMode: ${darkMode.toString()},orderAsc: ${orderAsc.toString()},alturaCalendar: ${alturaCalendar.toString()},visibleCalendar: ${visibleCalendar.toString()},alturaData: ${alturaData.toString()},alturaHOJE: ${alturaHOJE.toString()},dataFormatada: ${dataFormatada.toString()},alturaListView: ${alturaListView.toString()}';
     return '{$string}';
   }
 }

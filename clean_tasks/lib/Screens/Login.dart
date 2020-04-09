@@ -17,11 +17,13 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool visibleFloatButtom =false;
   bool darkMode;
+  bool orderAsc;
   TemaDark temaDark = TemaDark();
 
   initPrefs()async{
     final prefs = await SharedPreferences.getInstance();
     darkMode = prefs.getBool("darkMode");
+    orderAsc = prefs.getBool("orderAsc");
   }
 
   Future<FirebaseUser> _getUser()async{
@@ -58,9 +60,11 @@ class _LoginPageState extends State<LoginPage> {
         )
       );
     }else{
-      Navigator.push(context, MaterialPageRoute(
+      Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context)=> HomePage(
-          user: user,dark: darkMode,
+          user: user,
+          dark: darkMode,
+          orderAsc: orderAsc,
         )
       ));
     }
@@ -79,10 +83,12 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
         visibleFloatButtom = false;
       });
-        Future.delayed(Duration(seconds: 3),(){
-          Navigator.push(context, MaterialPageRoute(
+        Future.delayed(Duration(milliseconds: 1500),(){
+          Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context)=> HomePage(
-          user: user,dark: darkMode,
+          user: user,
+          dark: darkMode,
+          orderAsc: orderAsc,
         )
       ));
         });
@@ -106,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
         height: double.infinity,
         width: double.infinity,
         
-          child: Image.asset("assets/peoples_vector.png",fit: BoxFit.cover,),
+          child: Image.asset("assets/phone_people.png",fit: BoxFit.contain,),
         
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
