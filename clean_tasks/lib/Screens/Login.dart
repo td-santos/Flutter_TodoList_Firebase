@@ -24,6 +24,8 @@ class _LoginPageState extends State<LoginPage> {
     final prefs = await SharedPreferences.getInstance();
     darkMode = prefs.getBool("darkMode");
     orderAsc = prefs.getBool("orderAsc");
+    print("LoginPage DarkMODE: $darkMode");
+    print("LoginPage OrdeASC: $orderAsc");
   }
 
   Future<FirebaseUser> _getUser()async{

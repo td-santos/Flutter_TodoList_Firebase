@@ -53,31 +53,33 @@ class _DialogAddTaskState extends State<DialogAddTask>
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(width * 0.040)),
+          borderRadius: BorderRadius.circular(width * 0.05)),
       
       content: SingleChildScrollView(
           child: Container(
         width: width,
         decoration: BoxDecoration(
             color: widget.darkMode == true? temaDark.dialogColor: Colors.white, 
-            borderRadius: BorderRadius.circular(20)),
+            borderRadius: BorderRadius.circular(width * 0.05)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(left: 5, right: 5, top: 10),
+              padding: EdgeInsets.only(left: width * 0.02, right: width * 0.02, top: width * 0.04),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Flexible(
                     child: TextField(
+
                       style: TextStyle(
                         color: widget.darkMode==true ?Colors.grey[300]:Colors.black,
-                        fontSize: 20
+                        fontSize: 17,//width * 0.0476
                       ),
                       keyboardType: TextInputType.multiline,
                       maxLines: 15,
@@ -87,8 +89,8 @@ class _DialogAddTaskState extends State<DialogAddTask>
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  bottomLeft: Radius.circular(15)))),
+                                  topLeft: Radius.circular(width * 0.04),
+                                  bottomLeft: Radius.circular(width * 0.04)))),
                     ),
                   ),
                   GestureDetector(
@@ -96,7 +98,7 @@ class _DialogAddTaskState extends State<DialogAddTask>
                       setState(() {
                         if (visibleCalendar == false) {
                           visibleCalendar = !visibleCalendar;
-                          alturaCalendar = 300;
+                          alturaCalendar = height * 0.4;
                           //homeStore.setAlturaCalendar(350);
                         } else {
                           visibleCalendar = !visibleCalendar;
@@ -106,13 +108,13 @@ class _DialogAddTaskState extends State<DialogAddTask>
                       });
                     },
                     child: Container(
-                        height: 63.5,
-                        width: 50,
+                        height: 60,//height * 0.072,
+                        width: width * 0.13,
                         decoration: BoxDecoration(
                             color: Colors.blue,
                             borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(15),
-                                bottomRight: Radius.circular(15))),
+                                topRight: Radius.circular(width * 0.04),
+                                bottomRight: Radius.circular(width * 0.04))),
                         child: visibleCalendar == false
                             ? Icon(
                                 Icons.calendar_today,
@@ -127,7 +129,7 @@ class _DialogAddTaskState extends State<DialogAddTask>
               ),
             ),
             SizedBox(
-              height: 10,
+              height: height * 0.01,
             ),
             AnimatedSize(
               duration: Duration(milliseconds: 200),
@@ -137,10 +139,12 @@ class _DialogAddTaskState extends State<DialogAddTask>
                 width: width,
                 height: alturaCalendar,
                 child: TableCalendar(
+                  availableGestures: AvailableGestures.none,
                   calendarController: calendarController,
                   locale: "pt_BR",
                   headerStyle: HeaderStyle(
                     titleTextStyle: TextStyle(
+                      fontSize: 12,
                               color: widget.darkMode == true
                                   ? temaDark.calendarHeadcolor
                                   : null),
@@ -151,11 +155,34 @@ class _DialogAddTaskState extends State<DialogAddTask>
                   calendarStyle: CalendarStyle(
                     outsideDaysVisible: false,
                     weekdayStyle: TextStyle(
-                                color: widget.darkMode == true
-                                    ? temaDark.calendarDayscolor
-                                    : null)
+                      fontSize: 12,
+                      color: widget.darkMode == true ? temaDark.calendarDayscolor : null),
+                    weekendStyle: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red
                     ),
-                  daysOfWeekStyle: DaysOfWeekStyle(),
+                    todayStyle: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white
+                    ),
+                    selectedStyle: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white
+                    )
+                    ),
+
+                    
+                  daysOfWeekStyle: DaysOfWeekStyle(
+                    weekendStyle: TextStyle(
+                      color: Colors.red,
+                      fontSize: 12
+                    ),
+                    weekdayStyle: TextStyle(
+                      color: widget.darkMode == true ?Colors.grey: Colors.black,
+                      fontSize: 12,
+                    ),
+
+                  ),
                   initialCalendarFormat: CalendarFormat.month,
                   initialSelectedDay:
                       widget.datatarefa != null ? selectedDate : DateTime.now(),
@@ -168,7 +195,7 @@ class _DialogAddTaskState extends State<DialogAddTask>
               ),
             ),
             SizedBox(
-              height: 20,
+              height: visibleCalendar ==true? 0 : height * 0.02,
             ),
             GestureDetector(
               onTap: (){
@@ -187,16 +214,16 @@ class _DialogAddTaskState extends State<DialogAddTask>
               },
               child: Container(
                 width: width,
-                height: 60,
+                height: height * 0.06,
                 decoration: BoxDecoration(
                     color: widget.titleTarefa ==null? Colors.green:Colors.orange,
                     borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20))),
+                        bottomLeft: Radius.circular(width * 0.05),
+                        bottomRight: Radius.circular(width * 0.05))),
                 child: Center(
                   child: Text(
                     widget.titleTarefa == null ? "Salvar" : "Editar",
-                    style: TextStyle(fontSize: 25, color: Colors.white),
+                    style: TextStyle(fontSize: width * 0.05, color: Colors.white),
                   ),
                 ),
               ),

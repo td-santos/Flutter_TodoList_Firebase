@@ -64,14 +64,15 @@ class _TaskItemState extends State<TaskItem> {
     return Column(
       children: <Widget>[
         AnimatedContainer(
+            
             duration: Duration(milliseconds: 400),
-            //padding: EdgeInsets.only(top: 0,bottom: 12),
-            width: double.infinity,
+            
+            width: width,
             decoration: BoxDecoration(
               color:widget.darkMode==true
               ? widget.concluido == true ? Colors.orange[200] : Colors.orange
               : widget.concluido == true ? Colors.orange[100] : Colors.orange[300],
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(width * 0.045),
               /*boxShadow: [BoxShadow(
                 color: Colors.grey[300],
                 blurRadius: 2,
@@ -102,10 +103,11 @@ class _TaskItemState extends State<TaskItem> {
                       },
                     ),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          padding: EdgeInsets.only(top: 11, bottom: 11),
-                          width: 260,
+                          padding: EdgeInsets.only(top: width * 0.025, bottom: width * 0.025),
+                          width: width * 0.7,
                           child: GestureDetector(
                               onTap: () {
                                 print(
@@ -114,7 +116,7 @@ class _TaskItemState extends State<TaskItem> {
                               },
                               child: Text(
                                 widget.title,
-                                style: TextStyle(fontSize: 20),
+                                style: TextStyle(fontSize: width * 0.05),
                               )),
                         ),
                       ],
@@ -122,7 +124,7 @@ class _TaskItemState extends State<TaskItem> {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 10, right: 15, top: 10),
+                  padding: EdgeInsets.only(left: width * 0.01, right: width * 0.025, top: width * 0.025),
                   child: GestureDetector(
                     onTap: (){
                       showDialog(context: context,
