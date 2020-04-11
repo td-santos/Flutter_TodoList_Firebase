@@ -1,16 +1,19 @@
-# clean_tasks
+# Flutter_TodoList_Firebase
 
-A new Flutter application.
+IN PROGRESS...
 
-## Getting Started
+ <h2>Para reproduzir este Projeto:</h2>
 
-This project is a starting point for a Flutter application.
+- Ter intalado o Dart e o Flutter no ambiente.
+- Obtenha a chave SHA-1 do seu projeto ( Necesário para o GoogleSignIN).</br>
 
-A few resources to get you started if this is your first Flutter project:
+    [Clique aqui para saber como obter o SHA1](https://developers.google.com/android/guides/client-auth).
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Crie um projeto no Firebase.
+- Dentro do projeto, em Overview, Crie o app para android(adicionando a chaveSHA1) e/ou ios seguindo os passos informados pelo próprio Firebase.
+- Vá na Aba authentication e ative o Login pelo provedor Google, adicionando a chave SHA1 também nesta etapa e um email de suporte.
+- Vá na Aba Database e ative o banco de dados.
+- Após essas configurações feitas o projeto estará aptos a ser executado.
+
+<br><br>
