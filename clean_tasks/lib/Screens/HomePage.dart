@@ -4,8 +4,6 @@ import 'package:clean_tasks/Screens/Login.dart';
 import 'package:clean_tasks/Stores/home_store.dart';
 import 'package:clean_tasks/TemaDark.dart';
 import 'package:clean_tasks/Widgets/DialogAddTask.dart';
-
-
 import 'package:clean_tasks/Widgets/TaskItem.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,7 +66,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     showDialog(
         context: context,
         builder: (context) {
+          
+          print("DarkMODE homeStore Dialog ADD: ${homeStore.darkMode}");
+
           return DialogAddTask(
+            
             user: widget.user,
             darkMode: homeStore.darkMode,
           );
@@ -88,6 +90,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     // TODO: implement initState
     super.initState();    
+    initPrefs();
     data = formatterDataString.format(dataAtual);
     homeStore.setDataFormatada(data);
     //homeStore.setAturaHOJE(width * 0.12);
@@ -97,7 +100,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
 
-    initPrefs();
+    
 
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
@@ -135,7 +138,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           GestureDetector(
                             
                             child: Container(
-                              height: height * 0.055,
+                              height: height * 0.06,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(width * 0.035),
                                 child: Image.network(
@@ -154,7 +157,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               child: Icon(
                                 Icons.sort,
                                 size: width * 0.07,
-                                color: darkMode == true
+                                color: homeStore.darkMode == true
                                     ? Colors.black
                                     : Colors.grey[400],
                               ))
@@ -167,15 +170,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           //_bottomSheetAddTask();
                         },
                         child: Container(
-                            height: height * 0.055,
-                            width: height * 0.055,
+                          padding: EdgeInsets.all(width * 0.04),
+                            //height: height * 0.055,
+                            //width: height * 0.055,
                             decoration: BoxDecoration(
                                 color: homeStore.darkMode == true
                                     ? temaDark.buttomAddcolor
                                     : Colors.grey[200],
                                 borderRadius: BorderRadius.circular(width * 0.035)),
                             child: Icon(
-                              Icons.add,
+                              Icons.add,size: width * 0.05,
                               color: homeStore.darkMode == true
                                   ? temaDark.iconAddcolor
                                   : Colors.blue[600],
@@ -204,7 +208,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   style: TextStyle(
                                       color: homeStore.darkMode == true
                                           ? temaDark.textDiaAtualcolor
-                                          : null,
+                                          : Colors.grey[850],
                                       fontSize: homeStore.alturaHOJE,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -235,17 +239,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             onTap: () {
                               if (homeStore.visibleCalendar == false) {
                                 homeStore.setVisibleCalendar();
-                                homeStore.setAlturaCalendar(height * 0.5);
+                                homeStore.setAlturaCalendar(width * 1.05);
                               } else {
                                 homeStore.setAlturaCalendar(0);
                                 homeStore.setVisibleCalendar();
                                 
                               }
                             },
-                            child: AnimatedContainer(
-                                duration: Duration(milliseconds: 000),
-                                height: height * 0.055,
-                                width: height * 0.055,
+                            child: Container(
+                                //duration: Duration(milliseconds: 000),
+                                padding: EdgeInsets.all(width * 0.03),
+                                //height: height * 0.055,
+                                //width: height * 0.055,
                                 decoration: BoxDecoration(
                                     color: homeStore.darkMode == true
                                         ? Colors.blue[800]
@@ -253,11 +258,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     borderRadius: BorderRadius.circular(width * 0.035)),
                                 child: homeStore.visibleCalendar == false //visibleCalendar == false
                                     ? Icon(
-                                        Icons.calendar_today,
+                                        Icons.calendar_today,//size: width * 0.055,
                                         color: Colors.white,
                                       )
                                     : Icon(
-                                        Icons.close,
+                                        Icons.close,//size: width * 0.055,
                                         color: Colors.white,
                                       )),
                           );
@@ -465,7 +470,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Text(
                       "Modo Escuro",
                       style: TextStyle(
-                          fontSize: width * 0.04,
+                          fontSize: width * 0.035,
                           color: homeStore.darkMode == true
                               ? Colors.grey[400]
                               : Colors.black),
@@ -494,7 +499,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Text(
                       "Ordenação Crescente",
                       style: TextStyle(
-                          fontSize: width * 0.04,
+                          fontSize: width * 0.035,
                           color: homeStore.darkMode == true
                               ? Colors.grey[400]
                               : Colors.black),

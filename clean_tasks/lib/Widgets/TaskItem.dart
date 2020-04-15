@@ -103,11 +103,11 @@ class _TaskItemState extends State<TaskItem> {
                       },
                     ),
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      //mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(top: width * 0.025, bottom: width * 0.025),
-                          width: width * 0.7,
+                          width: width * 0.6,
                           child: GestureDetector(
                               onTap: () {
                                 print(
