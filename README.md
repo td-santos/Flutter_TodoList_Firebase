@@ -12,7 +12,7 @@ IN PROGRESS...
 
 - Crie um projeto no Firebase.
 - Dentro do projeto, em Overview, Crie o app para android(adicionando a chaveSHA1) e/ou ios seguindo os passos informados pelo próprio Firebase.
-- Vá na Aba authentication e ative o Login pelo provedor Google, adicionando a chave SHA1 também nesta etapa e um email de suporte.
+- Vá na Aba authentication e ative o Login pelo provedor Google, adicionando um email de suporte.
 - Vá na Aba Database e ative o banco de dados.
 - Após essas configurações feitas o projeto estará aptos a ser executado.
 
