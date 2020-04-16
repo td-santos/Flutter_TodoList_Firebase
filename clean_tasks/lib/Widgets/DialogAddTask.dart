@@ -84,7 +84,7 @@ class _DialogAddTaskState extends State<DialogAddTask>
                       keyboardType: TextInputType.multiline,
                       maxLines: 15,
                       minLines: 1,
-                      autofocus: true,
+                      //autofocus: true,
                       controller: _textController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(

@@ -136,7 +136,7 @@ class _TaskItemState extends State<TaskItem> {
                           content: Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color:widget.darkMode ==true? Colors.grey[850] : Colors.white,
                               borderRadius: BorderRadius.circular(15)
                             ),
                             width: width,
@@ -144,7 +144,8 @@ class _TaskItemState extends State<TaskItem> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Text("  Deletar Item?",style: TextStyle(
-                                  fontSize: 20
+                                  fontSize: width * 0.05,
+                                  color: widget.darkMode == true ?Colors.grey[300]: Colors.white
                                 ),),
                                 SizedBox(width: 10,),
                                 GestureDetector(
