@@ -67,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
           user: user,
           dark: darkMode,
           orderAsc: orderAsc,
+          contexto: context,
         )
       ));
     }
@@ -91,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
           user: user,
           dark: darkMode,
           orderAsc: orderAsc,
+          contexto: context,
         )
       ));
         });

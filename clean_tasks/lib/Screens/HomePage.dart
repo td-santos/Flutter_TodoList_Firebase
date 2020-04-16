@@ -19,8 +19,9 @@ class HomePage extends StatefulWidget {
   final FirebaseUser user;
   final bool dark;
   final bool orderAsc;
+  final BuildContext contexto;
 
-  const HomePage({Key key, this.user, this.dark, this.orderAsc})
+  const HomePage({Key key, this.user, this.dark, this.orderAsc, this.contexto})
       : super(key: key);
 
   @override
@@ -77,7 +78,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         });
   }
 
-  Future<bool> _dialodConta() {
+  _dialodConta() {
     showDialog(
         context: context,
         builder: (context) {
@@ -93,8 +94,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     initPrefs();
     data = formatterDataString.format(dataAtual);
     homeStore.setDataFormatada(data);
-    //homeStore.setAturaHOJE(width * 0.12);
-    //homeStore.setAturaData(width * 0.032);
+    homeStore.setAturaHOJE(MediaQuery.of(widget.contexto).size.width * 0.14);
+    homeStore.setAturaData(MediaQuery.of(widget.contexto).size.width * 0.032);
   }
 
   @override
@@ -109,9 +110,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     //homeStore.resetAlturaListView(0);
     
 
-    return WillPopScope(
-      onWillPop: _dialodConta,
-      child: Scaffold(        
+    return Scaffold(        
         body: SingleChildScrollView(
           physics: NeverScrollableScrollPhysics(),
           child: Observer(builder: (_) {
@@ -316,7 +315,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   homeStore.setAturaHOJE(0);
                                 } else {
                                   homeStore.setAturaData(width * 0.032);
-                                  homeStore.setAturaHOJE(width * 0.12);
+                                  homeStore.setAturaHOJE(width * 0.14);//width * 0.12);
                                 }
                               }
                             },
@@ -402,8 +401,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           }),
         ),
         
-      ),
-    );
+      );
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////
