@@ -1,7 +1,7 @@
 # Flutter_TodoList_Firebase
 
-Aplicativo TodoList desenvolvito em Flutter com integração ao Firebase!</br>
-Com o intuito de armazenar suas tarefas e organizá-las por dia.
+Aplicativo Lista de Tarefas desenvolvido em Flutter com integração ao Firebase!</br>
+App com o intuito de armazenar suas tarefas e organizá-las pelo dia selecionado.
 </br></br>
 
 <img  width="200" height="400" src="clean_tasks/assets/prints/print_1.png"><span style="padding-left:2px"></span>
