@@ -53,7 +53,7 @@ App com o intuito de armazenar suas tarefas e organizá-las pelo dia selecionado
   
     • Vá na aba Authentication e ative o Login pelo provedor Google, adicionando um email para suporte.
     
-    • Vá na aba Database e ative o banco de dados..     
+    • Vá na aba Database e ative o banco de dados.     
     
     • Após essas configurações feitas o projeto estará apto a ser executado.
     
